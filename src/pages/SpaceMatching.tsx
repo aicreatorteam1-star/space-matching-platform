@@ -343,7 +343,6 @@ function SecondaryButton({ children, onClick }: { children: React.ReactNode; onC
       onMouseLeave={() => setHover(false)}
       style={{
         height: 40, padding: '0 20px',
-        background: 'transparent',
         border: hover ? '1.5px solid var(--color-electric-purple)' : '1.5px solid var(--color-border)',
         borderRadius: 'var(--radius-md)',
         color: hover ? 'var(--color-electric-purple)' : 'var(--color-text-secondary)',
@@ -808,3 +807,4 @@ export default function SpaceMatching() {
     </div>
   )
 }
+                                   
