@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Space Matching Platform — ระบบฝากเก็บของอัจฉริยะ เลือกทำเล จับคู่ขนาดห้อง" />
+  <title>Space Matching Platform — InnOlistic</title>
+
+  <!-- Prompt (Thai-capable Google Font) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ───────────────────────────────────────────
+       DESIGN TOKENS  (InnOlistic brand.config.ts style)
+    ─────────────────────────────────────────── */
+    :root {
+      /* Colour palette */
+      --color-primary:        #1A2E6E;   /* Navy core */
+      --color-primary-light:  #2B47A3;   /* Hover/active navy */
+      --color-primary-dark:   #0F1D4A;   /* Pressed navy */
+      --color-accent:         #F05A28;   /* InnOlistic orange */
+      --color-accent-hover:   #D44A1A;
+      --color-accent-light:   #FFF0EB;
+
+      --color-surface:        #FFFFFF;
+      --color-bg:             #F4F6FB;
+      --color-border:         #DDE2EF;
+      --color-border-focus:   #2B47A3;
+
+      --color-text-primary:   #111827;
+      --color-text-secondary: #6B7280;
+      --color-text-muted:     #9CA3AF;
+      --color-text-inverse:   #FFFFFF;
+
+      --color-success:        #10B981;
+      --color-success-bg:     #ECFDF5;
+      --color-warning:        #F59E0B;
+      --color-warning-bg:     #FFFBEB;
+      --color-error:          #EF4444;
+
+      /* Size S / M / L badge colours */
+      --color-size-s:         #3B82F6;
+      --color-size-s-bg:      #EFF6FF;
+      --color-size-m:         #8B5CF6;
+      --color-size-m-bg:      #F5F3FF;
+      --color-size-l:         #F05A28;
+      --color-size-l-bg:      #FFF0EB;
+
+      /* Typography */
+      --font-family:          'Prompt', sans-serif;
+      --font-size-xs:         0.75rem;
+      --font-size-sm:         0.875rem;
+      --font-size-base:       1rem;
+      --font-size-lg:         1.125rem;
+      --font-size-xl:         1.25rem;
+      --font-size-2xl:        1.5rem;
+      --font-size-3xl:        1.875rem;
+      --font-size-4xl:        2.25rem;
+
+      /* Spacing */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+
+      /* Radii */
+      --radius-sm:  6px;
+      --radius-md:  10px;
+      --radius-lg:  16px;
+      --radius-xl:  24px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md:  0 4px 16px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.06);
+      --shadow-lg:  0 10px 32px rgba(26,46,110,0.14), 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-focus: 0 0 0 3px rgba(43,71,163,0.25);
+
+      /* Transitions */
+      --transition-fast:   0.12s ease;
+      --transition-base:   0.22s ease;
+      --transition-slow:   0.35s cubic-bezier(0.4,0,0.2,1);
+
+      /* Button sizes  (InnOlistic Button Sizing spec) */
+      --btn-h-sm:   2rem;      /* 32px */
+      --btn-h-md:   2.5rem;    /* 40px */
+      --btn-h-lg:   3rem;      /* 48px */
+      --btn-h-xl:   3.5rem;    /* 56px */
+      --btn-px-sm:  0.875rem;
+      --btn-px-md:  1.25rem;
+      --btn-px-lg:  1.75rem;
+      --btn-px-xl:  2.25rem;
+    }
+
+    /* ───────────────────────────────────────────
+       RESET & BASE
+    ─────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      background: var(--color-bg);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ───────────────────────────────────────────
+       LAYOUT
+    ─────────────────────────────────────────── */
+    .app-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-4) var(--space-16);
+    }
+
+    /* ───────────────────────────────────────────
+       HEADER / HERO
+    ─────────────────────────────────────────── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-4) 0 var(--space-8);
+    }
+
+    .logo-mark {
+      width: 44px;
+      height: 44px;
+      background: var(--color-primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg { color: #fff; }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .logo-text .brand {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text .tagline {
+      font-size: var(--font-size-xs);
+      font-weight: 400;
+      color: var(--color-text-secondary);
+    }
+
+    /* Hero block */
+    .hero {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+      border-radius: var(--radius-xl);
+      padding: var(--space-10) var(--space-10);
+      color: var(--color-text-inverse);
+      margin-bottom: var(--space-8);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 220px; height: 220px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: 50%;
+      width: 300px; height: 300px;
+      background: rgba(240,90,40,0.12);
+      border-radius: 50%;
+    }
+
+    .hero-eyebrow {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: var(--space-2);
+    }
+
+    .hero-title {
+      font-size: var(--font-size-3xl);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: var(--space-3);
+      position: relative; z-index: 1;
+    }
+
+    .hero-title .accent { color: #FFB347; }
+
+    .hero-sub {
+      font-size: var(--font-size-base);
+      color: rgba(255,255,255,0.75);
+      max-width: 480px;
+      position: relative; z-index: 1;
+    }
+
+    /* ───────────────────────────────────────────
+       STEP PROGRESS
+    ─────────────────────────────────────────── */
+    .step-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: var(--space-8);
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex: 1;
+    }
+
+    .step-item:last-child .step-connector { display: none; }
+
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      flex-shrink: 0;
+      transition: background var(--transition-base), color var(--transition-base),
+                  box-shadow var(--transition-base);
+      background: var(--color-border);
+      color: var(--color-text-secondary);
+    }
+
+    .step-circle.active {
+      background: var(--color-primary);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(26,46,110,0.15);
+    }
+
+    .step-circle.done {
+      background: var(--color-success);
+      color: #fff;
+    }
+
+    .step-label {
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    .step-label.active { color: var(--color-primary); font-weight: 600; }
+    .step-label.done   { color: var(--color-success); }
+
+    .step-connector {
+      flex: 1;
+      height: 2px;
+      background: var(--color-border);
+      margin: 0 var(--space-2);
+      transition: background var(--transition-slow);
+    }
+
+    .step-connector.done { background: var(--color-success); }
+
+    /* ───────────────────────────────────────────
+       SECTION CARD
+    ─────────────────────────────────────────── */
+    .section-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--color-border);
+      padding: var(--space-8);
+      margin-bottom: var(--space-6);
+      transition: box-shadow var(--transition-base), border-color var(--transition-base);
+    }
+
+    .section-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-card.active {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md), 0 0 0 3px rgba(26,46,110,0.08);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+
+    .section-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--color-accent-light);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-accent);
+      flex-shrink: 0;
+      font-size: 1.3rem;
+    }
+
+    .section-title {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.3;
+    }
+
+    .section-subtitle {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-1);
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      background: rgba(26,46,110,0.08);
+      color: var(--color-primary);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      margin-right: var(--space-2);
+    }
+
+    /* ───────────────────────────────────────────
+       SECTION 1 — LOCATION PICKER
+    ─────────────────────────────────────────── */
+    .location-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 600px) {
+      .location-grid { grid-template-columns: 1fr; }
+    }
+
+    .location-card {
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5) var(--space-4);
+      cursor: pointer;
+      transition:
+        border-color var(--transition-base),
+        background   var(--transition-base),
+        box-shadow   var(--transition-base),
+        transform    var(--transition-fast);
+      background: var(--color-surface);
+      text-align: center;
+      user-select: none;
+    }
+
+    .location-card:hover {
+      border-color: var(--color-primary-light);
+      background: rgba(26,46,110,0.03);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .location-card.selected {
+      border-color: var(--color-primary);
+      background: rgba(26,46,110,0.05);
+      box-shadow: var(--shadow-focus);
+    }
+
+    .location-card.selected .loc-name {
+      color: var(--color-primary);
+    }
+
+    .location-icon {
+      font-size: 2rem;
+      margin-bottom: var(--space-2);
+      display: block;
+    }
+
+    .loc-name {
+      font-size: var(--font-size-base);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      transition: color var(--transition-fast);
+    }
+
+    .loc-detail {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      margin-top: var(--space-1);
+      line-height: 1.5;
+    }
+
+    .loc-badge {
+      display: inline-block;
+      margin-top: var(--space-2);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+    }
+
+    .badge-open  { background: var(--color-success-bg); color: var(--color-success); }
+    .badge-new   { background: var(--color-accent-light); color: var(--color-accent); }
+    .badge-busy  { background: var(--color-warning-bg); color: var(--color-warning); }
+
+    /* Radio hidden */
+    .location-card input[type="radio"] { display: none; }
+
+    /* Checkmark overlay */
+    .loc-check {
+      width: 22px; height: 22px;
+      border-radius: var(--radius-full);
+      border: 2px solid var(--color-border);
+      margin: var(--space-3) auto 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background var(--transition-base), border-color var(--transition-base);
+    }
+
+    .location-card.selected .loc-check {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .loc-check svg { display: none; }
+    .location-card.selected .loc-check svg { display: block; }
+
+    /* ───────────────────────────────────────────
+       SECTION 2 — ITEM COUNTER
+    ─────────────────────────────────────────── */
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      transition:
+        border-color var(--transition-base),
+        box-shadow   var(--transition-base),
+        background   var(--transition-base);
+    }
+
+    .item-row:hover {
+      border-color: var(--color-primary-light);
+      background: rgba(26,46,110,0.02);
+    }
+
+    .item-row.has-value {
+      border-color: var(--color-primary);
+      background: rgba(26,46,110,0.03);
+    }
+
+    .item-emoji {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+      width: 40px;
+      text-align: center;
+    }
+
+    .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item-name {
+      font-size: var(--font-size-base);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .item-vol {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      margin-top: 1px;
+    }
+
+    /* Counter control  (Button Sizing: md = 40px) */
+    .counter-ctrl {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-shrink: 0;
+    }
+
+    .btn-count {
+      width: var(--btn-h-md);
+      height: var(--btn-h-md);
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--color-border);
+      background: var(--color-surface);
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      display: flex; align-items: center; justify-content: center;
+      transition:
+        background     var(--transition-fast),
+        border-color   var(--transition-fast),
+        color          var(--transition-fast),
+        box-shadow     var(--transition-fast),
+        transform      var(--transition-fast);
+      user-select: none;
+    }
+
+    .btn-count:hover {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+      transform: scale(1.08);
+    }
+
+    .btn-count:active {
+      transform: scale(0.94);
+      box-shadow: none;
+    }
+
+    .btn-count.dec:hover {
+      background: var(--color-error);
+      border-color: var(--color-error);
+    }
+
+    .btn-count:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .count-display {
+      width: 44px;
+      text-align: center;
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    /* Volume summary bar */
+    .volume-bar-wrap {
+      margin-top: var(--space-5);
+      padding: var(--space-4) var(--space-5);
+      background: rgba(26,46,110,0.04);
+      border-radius: var(--radius-md);
+      border: 1.5px dashed var(--color-border);
+    }
+
+    .volume-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-2);
+    }
+
+    .volume-bar-label span:last-child {
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .volume-bar-track {
+      height: 6px;
+      background: var(--color-border);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .volume-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      border-radius: var(--radius-full);
+      transition: width var(--transition-slow);
+      width: 0%;
+    }
+
+    /* ───────────────────────────────────────────
+       SECTION 3 — MATCHING RESULT
+    ─────────────────────────────────────────── */
+    .result-empty {
+      text-align: center;
+      padding: var(--space-10) 0;
+      color: var(--color-text-muted);
+    }
+
+    .result-empty .empty-icon {
+      font-size: 3rem;
+      margin-bottom: var(--space-3);
+      opacity: 0.4;
+    }
+
+    .result-empty p {
+      font-size: var(--font-size-sm);
+    }
+
+    /* Room size result */
+    .result-match {
+      display: none;
+    }
+
+    .result-match.show {
+      display: block;
+      animation: fadeSlideUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .size-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+      padding: var(--space-5) var(--space-6);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-5);
+    }
+
+    .size-banner.size-s { background: var(--color-size-s-bg); border: 1.5px solid #BFDBFE; }
+    .size-banner.size-m { background: var(--color-size-m-bg); border: 1.5px solid #DDD6FE; }
+    .size-banner.size-l { background: var(--color-size-l-bg); border: 1.5px solid #FDDCCC; }
+
+    .size-pill {
+      width: 60px; height: 60px;
+      border-radius: var(--radius-lg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--font-size-2xl);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .size-s .size-pill { background: var(--color-size-s); color: #fff; }
+    .size-m .size-pill { background: var(--color-size-m); color: #fff; }
+    .size-l .size-pill { background: var(--color-size-l); color: #fff; }
+
+    .size-info .room-label {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .size-info .room-name {
+      font-size: var(--font-size-xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+    }
+
+    .size-info .room-dim {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .size-price {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .price-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      font-weight: 500;
+    }
+
+    .price-value {
+      font-size: var(--font-size-2xl);
+      font-weight: 800;
+      color: var(--color-primary);
+      line-height: 1.1;
+    }
+
+    .price-unit {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* Summary chips */
+    .summary-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-bottom: var(--space-6);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      background: rgba(26,46,110,0.07);
+      color: var(--color-primary);
+    }
+
+    .chip-accent {
+      background: var(--color-accent-light);
+      color: var(--color-accent);
+    }
+
+    /* ───────────────────────────────────────────
+       CONTACT FORM
+    ─────────────────────────────────────────── */
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+
+    .form-divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    .form-divider-text {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 600px) {
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .field-label {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .field-label .required {
+      color: var(--color-error);
+      margin-left: 2px;
+    }
+
+    .field-input {
+      height: var(--btn-h-lg);   /* 48px — standard input height */
+      padding: 0 var(--space-4);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      color: var(--color-text-primary);
+      background: var(--color-surface);
+      transition:
+        border-color var(--transition-fast),
+        box-shadow   var(--transition-fast);
+      width: 100%;
+      outline: none;
+    }
+
+    .field-input::placeholder { color: var(--color-text-muted); }
+
+    .field-input:hover  { border-color: var(--color-primary-light); }
+
+    .field-input:focus {
+      border-color: var(--color-border-focus);
+      box-shadow: var(--shadow-focus);
+    }
+
+    /* ───────────────────────────────────────────
+       BUTTONS
+    ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      transition:
+        background   var(--transition-fast),
+        box-shadow   var(--transition-base),
+        transform    var(--transition-fast),
+        color        var(--transition-fast),
+        border-color var(--transition-fast);
+      text-decoration: none;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background var(--transition-fast);
+    }
+
+    .btn:hover::after  { background: rgba(255,255,255,0.1); }
+    .btn:active::after { background: rgba(0,0,0,0.08); }
+
+    /* Sizes */
+    .btn-md {
+      height: var(--btn-h-md);
+      padding: 0 var(--btn-px-md);
+      font-size: var(--font-size-sm);
+    }
+
+    .btn-lg {
+      height: var(--btn-h-lg);
+      padding: 0 var(--btn-px-lg);
+      font-size: var(--font-size-base);
+    }
+
+    .btn-xl {
+      height: var(--btn-h-xl);
+      padding: 0 var(--btn-px-xl);
+      font-size: var(--font-size-lg);
+      border-radius: var(--radius-lg);
+    }
+
+    /* Variants */
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-text-inverse);
+      box-shadow: 0 2px 8px rgba(26,46,110,0.20);
+    }
+
+    .btn-primary:hover {
+      background: var(--color-primary-light);
+      box-shadow: 0 4px 16px rgba(26,46,110,0.30);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active { transform: translateY(0); box-shadow: none; }
+
+    .btn-accent {
+      background: var(--color-accent);
+      color: var(--color-text-inverse);
+      box-shadow: 0 2px 8px rgba(240,90,40,0.22);
+    }
+
+    .btn-accent:hover {
+      background: var(--color-accent-hover);
+      box-shadow: 0 4px 16px rgba(240,90,40,0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .btn-outline:hover {
+      background: rgba(26,46,110,0.06);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-text-secondary);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--color-text-primary);
+    }
+
+    .btn-full { width: 100%; }
+
+    /* ───────────────────────────────────────────
+       CTA SUBMIT ROW
+    ─────────────────────────────────────────── */
+    .submit-row {
+      margin-top: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .consent-text {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* Success state */
+    .success-overlay {
+      display: none;
+      text-align: center;
+      padding: var(--space-10) 0;
+    }
+
+    .success-overlay.show { display: block; animation: fadeSlideUp 0.5s ease both; }
+
+    .success-circle {
+      width: 72px; height: 72px;
+      border-radius: var(--radius-full);
+      background: var(--color-success-bg);
+      border: 2px solid var(--color-success);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--space-4);
+      font-size: 2rem;
+    }
+
+    .success-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin-bottom: var(--space-2);
+    }
+
+    .success-sub {
+      font-size: var(--font-size-base);
+      color: var(--color-text-secondary);
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    /* ───────────────────────────────────────────
+       TOAST / ALERT INLINE
+    ─────────────────────────────────────────── */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--space-4);
+    }
+
+    .alert-warning {
+      background: var(--color-warning-bg);
+      border: 1px solid #FDE68A;
+      color: #92400E;
+    }
+
+    .alert-info {
+      background: rgba(26,46,110,0.06);
+      border: 1px solid var(--color-border);
+      color: var(--color-primary);
+    }
+
+    /* ───────────────────────────────────────────
+       FOOTER
+    ─────────────────────────────────────────── */
+    .site-footer {
+      text-align: center;
+      padding-top: var(--space-10);
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--space-12);
+      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+    }
+
+    /* ───────────────────────────────────────────
+       UTILITY
+    ─────────────────────────────────────────── */
+    .text-sm   { font-size: var(--font-size-sm); }
+    .text-muted{ color: var(--color-text-secondary); }
+    .fw-700    { font-weight: 700; }
+    .mt-2      { margin-top: var(--space-2); }
+    .mt-4      { margin-top: var(--space-4); }
+    .hidden    { display: none !important; }
+
+    /* Ripple on btn-count */
+    @keyframes ripple {
+      to { transform: scale(2.5); opacity: 0; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app-wrapper">
+
+  <!-- ─── HEADER ─────────────────────────── -->
+  <header class="site-header">
+    <div class="logo-mark">
+      <!-- Box icon SVG (Lucide-style) -->
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.29 7 12 12 20.71 7"/>
+        <line x1="12" y1="22" x2="12" y2="12"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="brand">Space Matching</span>
+      <span class="tagline">ระบบฝากเก็บของอัจฉริยะ — InnOlistic Platform</span>
+    </div>
+  </header>
+
+  <!-- ─── HERO ───────────────────────────── -->
+  <div class="hero">
+    <div class="hero-eyebrow">Self-Storage · Smart Matching</div>
+    <div class="hero-title">
+      ฝากของง่าย เลือกทำเลที่ใช่<br/>
+      <span class="accent">จับคู่ขนาดห้องอัตโนมัติ</span>
+    </div>
+    <div class="hero-sub">
+      ระบุทำเล เลือกสิ่งของ แล้วปล่อยให้เราคำนวณห้องขนาดพอดีสำหรับคุณ
+      โดยไม่ต้องไปถึงสาขา
+    </div>
+  </div>
+
+  <!-- ─── STEP BAR ────────────────────────── -->
+  <div class="step-bar" id="stepBar">
+    <div class="step-item">
+      <div class="step-circle active" id="sc1">1</div>
+      <span class="step-label active" id="sl1">เลือกทำเล</span>
+      <div class="step-connector" id="conn1"></div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle" id="sc2">2</div>
+      <span class="step-label" id="sl2">ระบุสิ่งของ</span>
+      <div class="step-connector" id="conn2"></div>
+    </div>
+    <div class="step-item">
+      <div class="step-circle" id="sc3">3</div>
+      <span class="step-label" id="sl3">ผลการจับคู่</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 1 — LOCATION PICKER
+  ════════════════════════════════════════ -->
+  <div class="section-card active" id="sec1">
+    <div class="section-header">
+      <div class="section-icon">📍</div>
+      <div>
+        <div class="section-title">
+          <span class="step-badge">ขั้นตอนที่ 1</span>เลือกทำเล / สาขา
+        </div>
+        <div class="section-subtitle">เลือกสาขาที่คุณต้องการฝากเก็บของ</div>
+      </div>
+    </div>
+
+    <div class="location-grid">
+
+      <!-- Sukhumvit -->
+      <label class="location-card" id="loc-sukhumvit" onclick="selectLocation('sukhumvit', this)">
+        <input type="radio" name="location" value="sukhumvit" />
+        <span class="location-icon">🏙️</span>
+        <div class="loc-name">สุขุมวิท</div>
+        <div class="loc-detail">ถ. สุขุมวิท ซ.24<br/>ใกล้ BTS พร้อมพงษ์</div>
+        <span class="loc-badge badge-open">เปิดบริการ</span>
+        <div class="loc-check">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+               stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 6 5 9 10 3"/>
+          </svg>
+        </div>
+      </label>
+
+      <!-- Bangna -->
+      <label class="location-card" id="loc-bangna" onclick="selectLocation('bangna', this)">
+        <input type="radio" name="location" value="bangna" />
+        <span class="location-icon">🏗️</span>
+        <div class="loc-name">บางนา</div>
+        <div class="loc-detail">ถ. บางนา-ตราด กม.7<br/>ใกล้ Mega Bangna</div>
+        <span class="loc-badge badge-new">สาขาใหม่!</span>
+        <div class="loc-check">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+               stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 6 5 9 10 3"/>
+          </svg>
+        </div>
+      </label>
+
+      <!-- Rama 3 -->
+      <label class="location-card" id="loc-rama3" onclick="selectLocation('rama3', this)">
+        <input type="radio" name="location" value="rama3" />
+        <span class="location-icon">🌉</span>
+        <div class="loc-name">พระราม 3</div>
+        <div class="loc-detail">ถ. พระราม 3 ใกล้<br/>เซ็นทรัล พระราม 3</div>
+        <span class="loc-badge badge-busy">ที่ใกล้เต็ม</span>
+        <div class="loc-check">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
+               stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="2 6 5 9 10 3"/>
+          </svg>
+        </div>
+      </label>
+
+    </div>
+
+    <div class="mt-4" id="locAlert" style="display:none;">
+      <div class="alert alert-warning">
+        ⚠️ <span>กรุณาเลือกสาขาที่ต้องการก่อนดำเนินการต่อ</span>
+      </div>
+    </div>
+
+    <div class="mt-4" style="display:flex; justify-content:flex-end;">
+      <button class="btn btn-primary btn-lg" onclick="validateLocation()">
+        ถัดไป — ระบุสิ่งของ
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 2 — ITEM COUNTER
+  ════════════════════════════════════════ -->
+  <div class="section-card" id="sec2">
+    <div class="section-header">
+      <div class="section-icon">📦</div>
+      <div>
+        <div class="section-title">
+          <span class="step-badge">ขั้นตอนที่ 2</span>ระบุจำนวนสิ่งของ
+        </div>
+        <div class="section-subtitle">
+          กด <strong>+</strong> หรือ <strong>−</strong> เพื่อเลือกจำนวนสิ่งของแต่ละประเภท
+        </div>
+      </div>
+    </div>
+
+    <div class="item-list">
+
+      <!-- กล่องลัง -->
+      <div class="item-row" id="row-box">
+        <div class="item-emoji">📦</div>
+        <div class="item-info">
+          <div class="item-name">กล่องลัง / ลังกระดาษ</div>
+          <div class="item-vol">ปริมาตรประมาณ 0.12 m³ / ใบ</div>
+        </div>
+        <div class="counter-ctrl">
+          <button class="btn-count dec" onclick="changeCount('box', -1)" id="dec-box" disabled>−</button>
+          <span class="count-display" id="cnt-box">0</span>
+          <button class="btn-count inc" onclick="changeCount('box', 1)">+</button>
+        </div>
+      </div>
+
+      <!-- กระเป๋าเดินทาง -->
+      <div class="item-row" id="row-bag">
+        <div class="item-emoji">🧳</div>
+        <div class="item-info">
+          <div class="item-name">กระเป๋าเดินทาง</div>
+          <div class="item-vol">ปริมาตรประมาณ 0.25 m³ / ใบ</div>
+        </div>
+        <div class="counter-ctrl">
+          <button class="btn-count dec" onclick="changeCount('bag', -1)" id="dec-bag" disabled>−</button>
+          <span class="count-display" id="cnt-bag">0</span>
+          <button class="btn-count inc" onclick="changeCount('bag', 1)">+</button>
+        </div>
+      </div>
+
+      <!-- ตู้เสื้อผ้า -->
+      <div class="item-row" id="row-wardrobe">
+        <div class="item-emoji">🚪</div>
+        <div class="item-info">
+          <div class="item-name">ตู้เสื้อผ้า</div>
+          <div class="item-vol">ปริมาตรประมาณ 1.8 m³ / ตู้</div>
+        </div>
+        <div class="counter-ctrl">
+          <button class="btn-count dec" onclick="changeCount('wardrobe', -1)" id="dec-wardrobe" disabled>−</button>
+          <span class="count-display" id="cnt-wardrobe">0</span>
+          <button class="btn-count inc" onclick="changeCount('wardrobe', 1)">+</button>
+        </div>
+      </div>
+
+      <!-- ตู้เย็น -->
+      <div class="item-row" id="row-fridge">
+        <div class="item-emoji">🧊</div>
+        <div class="item-info">
+          <div class="item-name">ตู้เย็น</div>
+          <div class="item-vol">ปริมาตรประมาณ 0.9 m³ / เครื่อง</div>
+        </div>
+        <div class="counter-ctrl">
+          <button class="btn-count dec" onclick="changeCount('fridge', -1)" id="dec-fridge" disabled>−</button>
+          <span class="count-display" id="cnt-fridge">0</span>
+          <button class="btn-count inc" onclick="changeCount('fridge', 1)">+</button>
+        </div>
+      </div>
+
+      <!-- โซฟา -->
+      <div class="item-row" id="row-sofa">
+        <div class="item-emoji">🛋️</div>
+        <div class="item-info">
+          <div class="item-name">โซฟา / เก้าอี้ใหญ่</div>
+          <div class="item-vol">ปริมาตรประมาณ 2.5 m³ / ตัว</div>
+        </div>
+        <div class="counter-ctrl">
+          <button class="btn-count dec" onclick="changeCount('sofa', -1)" id="dec-sofa" disabled>−</button>
+          <span class="count-display" id="cnt-sofa">0</span>
+          <button class="btn-count inc" onclick="changeCount('sofa', 1)">+</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Volume bar -->
+    <div class="volume-bar-wrap mt-4">
+      <div class="volume-bar-label">
+        <span>ปริมาตรรวมที่คำนวณได้</span>
+        <span id="volDisplay">0.00 m³</span>
+      </div>
+      <div class="volume-bar-track">
+        <div class="volume-bar-fill" id="volBar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="mt-4" id="itemAlert" style="display:none;">
+      <div class="alert alert-warning">
+        ⚠️ <span>กรุณาเพิ่มสิ่งของอย่างน้อย 1 รายการก่อนดำเนินการต่อ</span>
+      </div>
+    </div>
+
+    <div class="mt-4" style="display:flex; justify-content:space-between; gap:var(--space-3);">
+      <button class="btn btn-ghost btn-lg" onclick="goBack()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        ย้อนกลับ
+      </button>
+      <button class="btn btn-primary btn-lg" onclick="validateItems()">
+        คำนวณผล & ดูการจับคู่
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       SECTION 3 — MATCHING RESULT
+  ════════════════════════════════════════ -->
+  <div class="section-card" id="sec3">
+    <div class="section-header">
+      <div class="section-icon">✨</div>
+      <div>
+        <div class="section-title">
+          <span class="step-badge">ขั้นตอนที่ 3</span>ผลการจับคู่ห้องเก็บของ
+        </div>
+        <div class="section-subtitle">
+          ขนาดห้องที่เหมาะสมกับสิ่งของของคุณ พร้อมราคาต่อเดือน
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="result-empty" id="resultEmpty">
+      <div class="empty-icon">🔍</div>
+      <p>กรุณาระบุจำนวนสิ่งของในขั้นตอนที่ 2<br/>เพื่อดูผลการจับคู่ห้องที่เหมาะสม</p>
+    </div>
+
+    <!-- Matched result (shown after calculation) -->
+    <div class="result-match" id="resultMatch">
+
+      <!-- Size banner -->
+      <div id="sizeBanner" class="size-banner">
+        <div class="size-pill" id="sizePill">S</div>
+        <div class="size-info">
+          <div class="room-label">ขนาดห้องแนะนำ</div>
+          <div class="room-name" id="roomName">Size S — ล็อกเกอร์ขนาดเล็ก</div>
+          <div class="room-dim" id="roomDim">ขนาดพื้นที่ 1.0 × 1.2 × 2.0 ม. (~2.4 m³)</div>
+        </div>
+        <div class="size-price">
+          <div class="price-label">ราคาต่อเดือน</div>
+          <div class="price-value" id="priceValue">฿990</div>
+          <div class="price-unit">รวม VAT / เดือน</div>
+        </div>
+      </div>
+
+      <!-- Summary chips -->
+      <div class="summary-chips" id="summaryChips"></div>
+
+      <div class="alert alert-info" style="margin-bottom:var(--space-5);">
+        📋 <span>ข้อมูลนี้จะถูกส่งให้เจ้าหน้าที่ติดต่อกลับเพื่อยืนยันและนัดหมายนำของเข้าฝาก</span>
+      </div>
+
+      <!-- Contact form -->
+      <div class="form-divider">
+        <div class="form-divider-line"></div>
+        <div class="form-divider-text">กรอกข้อมูลเพื่อให้เจ้าหน้าที่ติดต่อกลับ</div>
+        <div class="form-divider-line"></div>
+      </div>
+
+      <div id="contactFormBlock">
+        <div class="contact-grid">
+          <div class="field-group">
+            <label class="field-label" for="fName">
+              ชื่อ-นามสกุล <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="fName"
+              class="field-input"
+              placeholder="กรุณากรอกชื่อ-นามสกุล"
+              autocomplete="name"
+            />
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="fPhone">
+              เบอร์โทรศัพท์ <span class="required">*</span>
+            </label>
+            <input
+              type="tel"
+              id="fPhone"
+              class="field-input"
+              placeholder="0xx-xxx-xxxx"
+              autocomplete="tel"
+              maxlength="13"
+            />
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <button class="btn btn-accent btn-xl btn-full" onclick="submitForm()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/>
+            </svg>
+            ส่งข้อมูลให้เจ้าหน้าที่
+          </button>
+          <p class="consent-text">
+            ข้อมูลของคุณจะถูกใช้เพื่อการติดต่อกลับเท่านั้น และจัดเก็บตาม
+            นโยบายความเป็นส่วนตัว PDPA
+          </p>
+        </div>
+      </div>
+
+      <!-- Success state -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-circle">✅</div>
+        <div class="success-title">ส่งข้อมูลสำเร็จ!</div>
+        <div class="success-sub">
+          เจ้าหน้าที่ของเราจะติดต่อกลับภายใน 24 ชั่วโมง<br/>
+          เพื่อยืนยันรายละเอียดและนัดหมายนำของเข้าฝาก
+        </div>
+        <div class="mt-4">
+          <button class="btn btn-outline btn-lg" onclick="resetAll()">
+            เริ่มต้นใหม่
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="sec3BackRow" style="display:none; margin-top:var(--space-4);">
+      <button class="btn btn-ghost btn-lg" onclick="goBackToItems()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"/>
+          <polyline points="12 19 5 12 12 5"/>
+        </svg>
+        แก้ไขรายการสิ่งของ
+      </button>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─────────────────────────── -->
+  <footer class="site-footer">
+    <p>Space Matching Platform · InnOlistic / SCGJWD · Frontend Prototype v1.0</p>
+    <p class="mt-2">ระบบนี้ยังไม่มีระบบชำระเงิน — ส่งข้อมูลให้เจ้าหน้าที่เท่านั้น</p>
+  </footer>
+
+</div><!-- /app-wrapper -->
+
+<!-- ───────────────────────────────────────────
+     JAVASCRIPT — Logic
+─────────────────────────────────────────── -->
+<script>
+  /* ─── STATE ─────────────────────────────── */
+  const state = {
+    selectedLocation: null,
+    counts: { box: 0, bag: 0, wardrobe: 0, fridge: 0, sofa: 0 },
+    totalVolume: 0,
+    matchedSize: null,
+  };
+
+  /* ─── ITEM VOLUMES (m³) ─────────────────── */
+  const VOLUMES = {
+    box:      0.12,
+    bag:      0.25,
+    wardrobe: 1.80,
+    fridge:   0.90,
+    sofa:     2.50,
+  };
+
+  const ITEM_NAMES = {
+    box:      'กล่องลัง',
+    bag:      'กระเป๋าเดินทาง',
+    wardrobe: 'ตู้เสื้อผ้า',
+    fridge:   'ตู้เย็น',
+    sofa:     'โซฟา',
+  };
+
+  /* ─── ROOM SIZE RULES ────────────────────
+     S: ≤ 2.0 m³   →  ล็อกเกอร์ขนาดเล็ก   ฿990
+     M: 2.0–6.0 m³ →  ห้องขนาดกลาง        ฿1,990
+     L: > 6.0 m³   →  ห้องขนาดใหญ่         ฿3,490
+  ─────────────────────────────────────────── */
+  const SIZE_CONFIG = {
+    S: {
+      label: 'S',
+      name:  'Size S — ล็อกเกอร์ขนาดเล็ก',
+      dim:   'ขนาดพื้นที่ 1.0 × 1.2 × 2.0 ม. (~2.4 m³)',
+      price: '฿990',
+      cls:   'size-s',
+    },
+    M: {
+      label: 'M',
+      name:  'Size M — ห้องขนาดกลาง',
+      dim:   'ขนาดพื้นที่ 2.0 × 1.5 × 2.2 ม. (~6.6 m³)',
+      price: '฿1,990',
+      cls:   'size-m',
+    },
+    L: {
+      label: 'L',
+      name:  'Size L — ห้องขนาดใหญ่',
+      dim:   'ขนาดพื้นที่ 3.0 × 2.0 × 2.5 ม. (~15 m³)',
+      price: '฿3,490',
+      cls:   'size-l',
+    },
+  };
+
+  /* ─── LOCATION LABELS ───────────────────── */
+  const LOC_LABELS = {
+    sukhumvit: 'สุขุมวิท',
+    bangna:    'บางนา',
+    rama3:     'พระราม 3',
+  };
+
+  /* ════════════════════════════════════════
+     SECTION 1 — LOCATION
+  ═══════════════════════════════════════ */
+  function selectLocation(value, el) {
+    // Remove selected from all
+    document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.selectedLocation = value;
+    hideAlert('locAlert');
+  }
+
+  function validateLocation() {
+    if (!state.selectedLocation) {
+      showAlert('locAlert');
+      return;
+    }
+    hideAlert('locAlert');
+    showSection(2);
+  }
+
+  /* ════════════════════════════════════════
+     SECTION 2 — ITEM COUNTER
+  ═══════════════════════════════════════ */
+  function changeCount(key, delta) {
+    const newVal = state.counts[key] + delta;
+    if (newVal < 0) return;
+    state.counts[key] = newVal;
+
+    // Update display
+    document.getElementById('cnt-' + key).textContent = newVal;
+
+    // Toggle row highlight
+    document.getElementById('row-' + key).classList.toggle('has-value', newVal > 0);
+
+    // Toggle decrement button
+    document.getElementById('dec-' + key).disabled = (newVal === 0);
+
+    // Recompute volume
+    updateVolume();
+
+    // Hide item alert if any item > 0
+    if (getTotalItems() > 0) hideAlert('itemAlert');
+  }
+
+  function getTotalItems() {
+    return Object.values(state.counts).reduce((a, b) => a + b, 0);
+  }
+
+  function updateVolume() {
+    let vol = 0;
+    for (const [key, qty] of Object.entries(state.counts)) {
+      vol += qty * VOLUMES[key];
+    }
+    state.totalVolume = vol;
+
+    // Update display
+    document.getElementById('volDisplay').textContent = vol.toFixed(2) + ' m³';
+
+    // Bar max = 15 m³ (Size L capacity)
+    const pct = Math.min((vol / 15) * 100, 100);
+    document.getElementById('volBar').style.width = pct + '%';
+  }
+
+  function validateItems() {
+    if (getTotalItems() === 0) {
+      showAlert('itemAlert');
+      return;
+    }
+    hideAlert('itemAlert');
+    computeMatch();
+    showSection(3);
+  }
+
+  /* ════════════════════════════════════════
+     SECTION 3 — MATCHING RESULT
+  ═══════════════════════════════════════ */
+  function computeMatch() {
+    const vol = state.totalVolume;
+    let size;
+    if      (vol <= 2.0) size = 'S';
+    else if (vol <= 6.0) size = 'M';
+    else                 size = 'L';
+    state.matchedSize = size;
+
+    const cfg = SIZE_CONFIG[size];
+
+    // Update banner
+    const banner = document.getElementById('sizeBanner');
+    banner.className = 'size-banner ' + cfg.cls;
+    document.getElementById('sizePill').textContent = cfg.label;
+    document.getElementById('roomName').textContent  = cfg.name;
+    document.getElementById('roomDim').textContent   = cfg.dim;
+    document.getElementById('priceValue').textContent = cfg.price;
+
+    // Summary chips
+    const chipsEl = document.getElementById('summaryChips');
+    chipsEl.innerHTML = '';
+
+    // Location chip
+    addChip(chipsEl, '📍 ' + LOC_LABELS[state.selectedLocation], false);
+    // Volume chip
+    addChip(chipsEl, '📐 ' + vol.toFixed(2) + ' m³', false);
+    // Item chips
+    for (const [key, qty] of Object.entries(state.counts)) {
+      if (qty > 0) {
+        addChip(chipsEl, ITEM_NAMES[key] + ' × ' + qty, true);
+      }
+    }
+
+    // Show result
+    document.getElementById('resultEmpty').style.display = 'none';
+    const rm = document.getElementById('resultMatch');
+    rm.style.display = 'none';
+    // Force reflow for animation
+    void rm.offsetWidth;
+    rm.classList.add('show');
+    document.getElementById('sec3BackRow').style.display = 'block';
+  }
+
+  function addChip(container, text, accent) {
+    const chip = document.createElement('span');
+    chip.className = 'chip' + (accent ? ' chip-accent' : '');
+    chip.textContent = text;
+    container.appendChild(chip);
+  }
+
+  /* ════════════════════════════════════════
+     CONTACT FORM SUBMIT
+  ═══════════════════════════════════════ */
+  function submitForm() {
+    const name  = document.getElementById('fName').value.trim();
+    const phone = document.getElementById('fPhone').value.trim();
+
+    if (!name) {
+      highlightField('fName', true);
+      return;
+    } else { highlightField('fName', false); }
+
+    // Basic phone validation (Thai format)
+    const phoneClean = phone.replace(/[-\s]/g, '');
+    if (!phoneClean || !/^0\d{8,9}$/.test(phoneClean)) {
+      highlightField('fPhone', true);
+      return;
+    } else { highlightField('fPhone', false); }
+
+    // ── In production: POST to API endpoint ──
+    console.log('Form submitted:', {
+      location: state.selectedLocation,
+      items: state.counts,
+      volume: state.totalVolume.toFixed(2),
+      size: state.matchedSize,
+      name, phone,
+    });
+
+    // Show success
+    document.getElementById('contactFormBlock').style.display = 'none';
+    document.getElementById('successOverlay').classList.add('show');
+    document.getElementById('sec3BackRow').style.display = 'none';
+  }
+
+  function highlightField(id, isError) {
+    const el = document.getElementById(id);
+    el.style.borderColor = isError ? 'var(--color-error)' : '';
+    el.style.boxShadow   = isError ? '0 0 0 3px rgba(239,68,68,0.18)' : '';
+    if (isError) {
+      el.focus();
+      el.addEventListener('input', () => highlightField(id, false), { once: true });
+    }
+  }
+
+  /* ════════════════════════════════════════
+     NAVIGATION HELPERS
+  ═══════════════════════════════════════ */
+  function showSection(num) {
+    const sections = [1, 2, 3];
+    sections.forEach(n => {
+      const el = document.getElementById('sec' + n);
+      el.classList.toggle('active', n === num);
+    });
+
+    // Scroll to the target section
+    const target = document.getElementById('sec' + num);
+    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+
+    // Update step bar
+    updateStepBar(num);
+  }
+
+  function updateStepBar(activeStep) {
+    for (let i = 1; i <= 3; i++) {
+      const circle = document.getElementById('sc' + i);
+      const label  = document.getElementById('sl' + i);
+      const conn   = document.getElementById('conn' + i);
+
+      if (i < activeStep) {
+        circle.className = 'step-circle done';
+        circle.innerHTML = '✓';
+        label.className  = 'step-label done';
+        if (conn) conn.className = 'step-connector done';
+      } else if (i === activeStep) {
+        circle.className = 'step-circle active';
+        circle.innerHTML = i;
+        label.className  = 'step-label active';
+      } else {
+        circle.className = 'step-circle';
+        circle.innerHTML = i;
+        label.className  = 'step-label';
+        if (conn) conn.className = 'step-connector';
+      }
+    }
+  }
+
+  function goBack() {
+    showSection(1);
+  }
+
+  function goBackToItems() {
+    // Reset result state
+    document.getElementById('resultEmpty').style.display = '';
+    document.getElementById('resultMatch').classList.remove('show');
+    document.getElementById('resultMatch').style.display = 'none';
+    document.getElementById('sec3BackRow').style.display = 'none';
+    showSection(2);
+  }
+
+  function resetAll() {
+    // Reset state
+    state.selectedLocation = null;
+    state.counts = { box: 0, bag: 0, wardrobe: 0, fridge: 0, sofa: 0 };
+    state.totalVolume = 0;
+    state.matchedSize = null;
+
+    // Reset UI
+    document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('[id^="cnt-"]').forEach(el => el.textContent = '0');
+    document.querySelectorAll('.item-row').forEach(r => r.classList.remove('has-value'));
+    document.querySelectorAll('[id^="dec-"]').forEach(b => b.disabled = true);
+    document.getElementById('volDisplay').textContent = '0.00 m³';
+    document.getElementById('volBar').style.width = '0%';
+    document.getElementById('fName').value = '';
+    document.getElementById('fPhone').value = '';
+    document.getElementById('contactFormBlock').style.display = '';
+    document.getElementById('successOverlay').classList.remove('show');
+    document.getElementById('resultEmpty').style.display = '';
+    document.getElementById('resultMatch').classList.remove('show');
+    document.getElementById('resultMatch').style.display = 'none';
+    document.getElementById('sec3BackRow').style.display = 'none';
+
+    showSection(1);
+  }
+
+  /* ════════════════════════════════════════
+     ALERT HELPERS
+  ═══════════════════════════════════════ */
+  function showAlert(id) {
+    const el = document.getElementById(id);
+    el.style.display = 'block';
+    el.style.animation = 'fadeSlideUp 0.3s ease both';
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideAlert(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  /* ════════════════════════════════════════
+     PHONE AUTO-FORMAT  (Thai: 0xx-xxx-xxxx)
+  ═══════════════════════════════════════ */
+  document.getElementById('fPhone').addEventListener('input', function () {
+    let val = this.value.replace(/\D/g, '').substring(0, 10);
+    if (val.length > 6)      val = val.slice(0,3) + '-' + val.slice(3,6) + '-' + val.slice(6);
+    else if (val.length > 3) val = val.slice(0,3) + '-' + val.slice(3);
+    this.value = val;
+  });
+</script>
+
+</body>
+</html>
